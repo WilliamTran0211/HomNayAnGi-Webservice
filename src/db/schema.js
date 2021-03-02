@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const Enums = require('./enums');
-const Kinds = require('../../common');
+const { Kinds } = require('../../common');
 
 const Schema = mongoose.Schema;
 
@@ -59,4 +59,36 @@ schema.User = new Schema(
     }
 );
 
-
+schema.Recipe = new Schema(
+    {
+        title: {
+            type: String,
+            require: true,
+            validate: (value) => Kinds.mustBeString(value)
+        },
+        description: {
+            type: String
+        },
+        serves: {
+            type: Number,
+            require: true,
+            default: 2,
+            validate: (value) => Kinds.mustBeNumber(value)
+        },
+        cookIn: {
+            type: Number,
+            require: true,
+            default: 60,
+            validate: (value) => Kinds.mustBeNumber(value)
+        }
+        type: {
+            type: String,
+            require: true,
+            enum: Kinds.objectValues(Enums.DishTypes)
+        }
+    },
+    {
+        collection: 'recipes',
+        timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' }
+    }
+);

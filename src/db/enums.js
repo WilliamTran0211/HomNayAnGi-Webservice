@@ -19,4 +19,7 @@ Enums.UserStatuses = {
     INACTIVE: 'inactive'
 };
 
-
+Enums.DishTypes = {
+    DRINKS: 'drinks',
+    SOUP: 'soup'
+};
