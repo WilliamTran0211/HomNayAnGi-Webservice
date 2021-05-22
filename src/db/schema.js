@@ -80,7 +80,7 @@ schema.Recipe = new Schema(
             require: true,
             default: 60,
             validate: (value) => Kinds.mustBeNumber(value)
-        }
+        },
         type: {
             type: String,
             require: true,
@@ -92,3 +92,11 @@ schema.Recipe = new Schema(
         timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' }
     }
 );
+
+schema.DiskType = new Schema({
+    name: {
+        type: String,
+        require: true,
+        validate: (value) => Kinds.mustBeString(value)
+    }
+});

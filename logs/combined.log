@@ -1,0 +1,10 @@
+2021-05-22 13:55:10:5510 debug: User Hello text
+2021-05-22 13:55:14:5514 debug: User Hello text
+2021-05-22 13:55:28:5528 error: User Hello text
+2021-05-22 14:35:19:3519 error: User Hello text
+2021-05-22 14:35:19:3519 info: GET /api/user/text 304 5.749 ms - -
+2021-05-22 14:36:07:367 info: GET /api/user/text 304 2.337 ms - -
+2021-05-22 14:36:07:367 info: GET /api/user/text 304 0.593 ms - -
+2021-05-22 14:36:07:367 info: GET /api/user/text 304 0.284 ms - -
+2021-05-22 14:36:08:368 info: GET /api/user/text 304 0.263 ms - -
+2021-05-22 15:06:34:634 info: GET /api/user/text 304 2.437 ms - -
