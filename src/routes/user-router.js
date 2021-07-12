@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const { userController } = require('../controller');
 
 module.exports = router;
 
@@ -12,3 +13,5 @@ router.get('/text', (req, res) => {
         message: 'hello text'
     });
 });
+
+router.get('/', require('../controller/user/search'));
