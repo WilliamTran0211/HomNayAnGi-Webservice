@@ -3,12 +3,15 @@ const { Kinds } = require('../../common');
 const Enums = require('./enums');
 const { ObjectId } = mongoose.Types;
 
-const { User } = require('./schema');
+const { User, Recipe, DishType } = require('./schema');
 
 const db = {};
 module.exports = db;
 
-db.User = mongoose.model('users', User);
+db.User = mongoose.model('User', User);
+db.Recipe = mongoose.model('Recipe', Recipe);
+db.DishType = mongoose.model('DishType', DishType);
+db.Enums = Enums;
 
 mongoose.set('useCreateIndex', true);
 mongoose.set('useNewUrlParser', true);
@@ -17,21 +20,24 @@ mongoose.set('debug', true);
 
 db.load = async () => {
     const url = process.env.DB_URL;
-    const name = process.env.DB_NAME;
+    const dbName = process.env.DB_NAME;
     const poolSize = process.env.POOL_SIZE ? Kinds.asNumber(process.env.POOL_SIZE) : 2;
     Kinds.mustGreaterThan(poolSize, 0);
 
     return mongoose
         .connect(url, {
             useNewUrlParser: true,
+            useUnifiedTopology: true,
             dbName,
             poolSize,
-            autoIndex: process.env.DB_AUTO_INDEX == true // ignore type comparision
+            autoIndex: process.env.DB_AUTO_INDEX === 'true' // ignore type comparision
         })
         .then(async () => {
-            console.log('connect successful');
+            console.log('connect database successful');
 
             await db.createCollections();
+
+            return db;
         });
 };
 

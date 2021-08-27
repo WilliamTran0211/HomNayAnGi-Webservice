@@ -2,9 +2,15 @@ const Enums = {};
 module.exports = Enums;
 
 Enums.UserRoles = {
+    UNKNOWN: 'unknown',
     ADMIN: 'admin',
     USER: 'user',
     REVIEWER: 'reviewer'
+};
+
+Enums.SecretCodeTypes = {
+    GENERAL: 'general',
+    RESET_PASSWORD: 'reset_password'
 };
 
 Enums.Genders = {

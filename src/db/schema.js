@@ -54,10 +54,33 @@ schema.User = new Schema(
         }
     },
     {
-        collection: 'users',
+        collection: 'User',
         timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' } // very important in searching
     }
 );
+schema.User.index({ email: 'text', displayName: 'text', firstName: 'text', lastName: 'text' });
+
+schema.SecrectCode = new Schema({
+    userId: {
+        type: ObjectId,
+        required: true
+    },
+    uniqueId: {
+        type: String,
+        required: true,
+        unique: true
+    },
+    code: {
+        type: String,
+        required: true
+    },
+    expiredDate: Date,
+    checkedTime: {
+        // count down
+        type: Number,
+        default: Number.MAX_SAFE_INTEGER
+    }
+});
 
 schema.Recipe = new Schema(
     {
@@ -88,15 +111,49 @@ schema.Recipe = new Schema(
         }
     },
     {
-        collection: 'recipes',
+        collection: 'Recipe',
         timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' }
     }
 );
+schema.Recipe.index({ title: 'text' });
 
-schema.DiskType = new Schema({
-    name: {
-        type: String,
-        require: true,
-        validate: (value) => Kinds.mustBeString(value)
+schema.DishType = new Schema(
+    {
+        name: {
+            type: String,
+            require: true,
+            validate: (value) => Kinds.mustBeString(value)
+        }
+    },
+    {
+        collection: 'DishType'
     }
-});
+);
+
+schema.Food = new Schema(
+    {
+        name: {
+            type: String,
+            require: true,
+            validate: (value) => Kinds.mustBeString(value)
+        },
+        nutrition: {
+            calories: {
+                type: Number
+            },
+            protein: {
+                type: Number
+            },
+            carbs: {
+                type: Number
+            },
+            fat: {
+                type: Number
+            }
+        }
+    },
+    {
+        collection: 'Food',
+        timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' }
+    }
+);

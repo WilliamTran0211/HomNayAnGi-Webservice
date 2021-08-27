@@ -1,12 +1,13 @@
 const { userServices } = require('../../services');
+const { Kinds, Res } = require('../../../common');
+const ResultCodes = require('../../../common/common-result-codes');
 
 module.exports = async (req, res) => {
     try {
         let { id, name, email } = req.query;
         console.log('search ne');
-        console.log(req);
 
-        return res.json(req);
+        Res(res).ok(userServices.search);
     } catch (error) {
         res.status(400);
     }

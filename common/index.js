@@ -1,5 +1,6 @@
 module.exports = {
+    Res: require('./res'),
     Kinds: require('./kinds'),
-    CommonResultCodes: require('./common-result-codes'),
+    ResultCodes: require('./common-result-codes'),
     ResultError: require('./result-error')
 };

@@ -4,9 +4,11 @@ const logger = require('./config/httpLogger');
 const helmet = require('helmet');
 const cors = require('cors');
 const multer = require('multer');
-
 const dotenv = require('dotenv');
 dotenv.config();
+
+const db = require('./db');
+const services = require('../src/services');
 
 const port = process.env.PORT || 8080;
 
@@ -22,6 +24,8 @@ app.use(express.urlencoded({ extended: true }));
 // parsing multipart/form-data
 app.use(upload.array());
 app.use(logger);
+
+db.load();
 
 app.use('/api', require('./routes'));
 app.get('/', (req, res) => {
