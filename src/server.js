@@ -25,8 +25,14 @@ app.use(express.urlencoded({ extended: true }));
 app.use(upload.array());
 app.use(logger);
 
+app.locals.hello = 'hello from server';
+app.services = services(app);
 db.load();
 
+app.use(function (req, res, next) {
+    req.services = app.services;
+    next();
+});
 app.use('/api', require('./routes'));
 app.get('/', (req, res) => {
     res.json('Hom Nay An Gi APIs');

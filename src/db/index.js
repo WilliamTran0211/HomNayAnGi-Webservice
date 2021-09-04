@@ -3,7 +3,7 @@ const { Kinds } = require('../../common');
 const Enums = require('./enums');
 const { ObjectId } = mongoose.Types;
 
-const { User, Recipe, DishType } = require('./schema');
+const { User, Recipe, DishType, SecretCode, Food } = require('./schema');
 
 const db = {};
 module.exports = db;
@@ -11,6 +11,7 @@ module.exports = db;
 db.User = mongoose.model('User', User);
 db.Recipe = mongoose.model('Recipe', Recipe);
 db.DishType = mongoose.model('DishType', DishType);
+db.SecretCode = mongoose.model('SecretCode', SecretCode);
 db.Enums = Enums;
 
 mongoose.set('useCreateIndex', true);

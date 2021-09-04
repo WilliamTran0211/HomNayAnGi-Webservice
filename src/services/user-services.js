@@ -1,12 +1,14 @@
-const { Kinds } = require('../../common');
-const { User } = require('../db');
+const { Kinds, ResultCodes } = require('../../common');
 const { ObjectId } = require('mongoose').Types;
 const bcrypt = require('bcrypt');
-const Enums = require('../db/enums');
-const ResultCodes = require('../../common/common-result-codes');
 const AccessTokens = require('../util/access-token');
 
-const UserServices = function () {};
+const { User, Enums } = require('../db');
+
+const UserServices = function (app) {
+    console.log('Create User Service');
+    this.app = app;
+};
 
 module.exports = UserServices;
 
