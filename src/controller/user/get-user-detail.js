@@ -1,14 +1,14 @@
 const { Kinds, Res } = require('../../../common');
-const { userServices } = require('../../services');
 
 module.exports = async (req, res) => {
-    let { userId } = req.params;
+    const { services } = req;
+    const { userId } = req.params;
 
     if (!Kinds.isObjectId(userId)) {
         Res(res).badParam('Invalid userId', { userId: 1 });
     }
 
-    const user = await userServices.findUserById(userId);
+    const user = await services.userServices.findUserById(userId);
 
     if (!user) {
         Res(res).noContent('Not found');

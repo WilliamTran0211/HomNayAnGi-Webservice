@@ -1,9 +1,9 @@
-const services = require('../../services');
 const { Kinds, Res } = require('../../../common');
 const ResultCodes = require('../../../common/common-result-codes');
 const Enums = require('../../db/enums');
 
 module.exports = async (req, res) => {
+    const { services } = req;
     const { email, password } = req.body;
 
     if (!Kinds.isString(email) || !Kinds.isString(password)) {
