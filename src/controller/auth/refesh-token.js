@@ -4,6 +4,7 @@ const AccessTokens = require('../../util/access-token');
 const Enums = require('../../db/enums');
 
 module.exports = async (req, res) => {
+    const { services } = req;
     const { email, password, refreshToken } = req.body;
 
     const oldRefreshToken = refreshToken;
@@ -16,7 +17,7 @@ module.exports = async (req, res) => {
                     const userId = details.userId;
 
                     if (userId) {
-                        const user = await userServices.findUserById(userId, '_id password status');
+                        const user = await services.userServices.findUserById(userId, '_id password status');
 
                         if (user) {
                             if (user.status !== Enums.UserStatuses.ACTIVE) {
@@ -35,7 +36,7 @@ module.exports = async (req, res) => {
             }
             Kinds.mustExist(email);
             Kinds.mustExist(password);
-            return userServices.findUserByCredentials(email, password);
+            return services.userServices.findUserByCredentials(email, password);
         })
         .then(async (user) => {
             Kinds.mustExist(user, 'invalid authentication values', ResultCodes.PARAM_INVALID_VALUE);
