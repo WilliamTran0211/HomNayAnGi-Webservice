@@ -12,6 +12,7 @@ module.exports = {
     NO_CONTENT: 'no_content',
     DUPLICATED: 'duplicated',
     INVALID_STATE: 'invalid_state', // request params is correct + ser
+    NOT_FOUND: 'not_found',
 
     newError: (message, resultCode, resultData = null) => {
         return new ResultError(message, resultCode, resultData);

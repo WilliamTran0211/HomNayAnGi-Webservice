@@ -4,15 +4,15 @@ const SecretCodeServices = require('./secret-code-services');
 const RecipeService = require('./recipe-services');
 const FoodServices = require('./food-services');
 
-function load() {
+const service = function (app) {
     console.log('Here create services');
     return {
-        emailServices: new EmailServices(),
-        userServices: new UserServices(),
-        recipeService: new RecipeService(),
-        foodServices: new FoodServices(),
-        secretCodeServices: new SecretCodeServices()
+        emailServices: new EmailServices(app),
+        userServices: new UserServices(app),
+        recipeService: new RecipeService(app),
+        foodServices: new FoodServices(app),
+        secretCodeServices: new SecretCodeServices(app)
     };
-}
+};
 
-module.exports = load();
+module.exports = service;

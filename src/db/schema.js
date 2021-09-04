@@ -60,27 +60,26 @@ schema.User = new Schema(
 );
 schema.User.index({ email: 'text', displayName: 'text', firstName: 'text', lastName: 'text' });
 
-schema.SecrectCode = new Schema({
-    userId: {
-        type: ObjectId,
-        required: true
+schema.SecretCode = new Schema(
+    {
+        userId: {
+            type: ObjectId,
+            required: true
+        },
+        uniqueId: {
+            type: String,
+            required: true,
+            unique: true
+        },
+        secretKey: {
+            type: String,
+            required: true
+        }
     },
-    uniqueId: {
-        type: String,
-        required: true,
-        unique: true
-    },
-    code: {
-        type: String,
-        required: true
-    },
-    expiredDate: Date,
-    checkedTime: {
-        // count down
-        type: Number,
-        default: Number.MAX_SAFE_INTEGER
+    {
+        collection: 'SecretCode'
     }
-});
+);
 
 schema.Recipe = new Schema(
     {
