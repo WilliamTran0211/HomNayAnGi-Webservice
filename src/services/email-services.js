@@ -1,8 +1,11 @@
 const mailer = require('nodemailer');
+const ejs = require('ejs');
 const { Kinds } = require('../../common');
 
-const EmailServices = function () {
+const EmailServices = function (app) {
     console.log('Create Email Services');
+
+    this.app = app;
 
     let mailHost = process.env.MAILER_HOST;
     let mailPort = process.env.MAILER_PORT;
@@ -42,6 +45,14 @@ const EmailServices = function () {
 
 module.exports = EmailServices;
 
+const Templates = {
+    render: async (filename, data) => {
+        return ejs.renderFile(`${__dirname}/email-templates/${filename}`, data, {
+            async: true
+        });
+    }
+};
+
 EmailServices.prototype.send = async function (toEmail, subject, htmlBody) {
     Kinds.mustExist(toEmail, 'toEmail');
     Kinds.mustExist(subject, 'subject');
@@ -52,18 +63,40 @@ EmailServices.prototype.send = async function (toEmail, subject, htmlBody) {
         return;
     }
 
-    console.log('sendinggggg');
-
     const mailOptions = {
         from: this._from,
         to: toEmail,
         subject: subject,
-        html: htmlBody // plain text body
+        html: htmlBody
     };
 
     return this.transporter.sendMail(mailOptions);
 };
 
-EmailServices.prototype.sendEmailActivation = async function () {};
+EmailServices.prototype.sendResetPasswordCode = async function (toEmail, userDisplayName, code) {
+    Kinds.mustExist(toEmail);
+    Kinds.mustExist(userDisplayName);
+    Kinds.mustExist(code);
 
-EmailServices.prototype.sendEmailResetPasswordCode = async function () {};
+    const data = {
+        email: toEmail,
+        userDisplayName: userDisplayName,
+        code: code,
+        message: 'For you security, this code will be expired in 3 minutes!'
+    };
+
+    const emailBody = await Templates.render('user-forgot-password.html', data);
+    console.log('sending');
+    return this.send(toEmail, 'Password reset code!', emailBody);
+};
+
+EmailServices.prototype.sendEmailVerifyCode = async function (toEmail, code) {
+    Kinds.mustExist(toEmail);
+    Kinds.mustExist(code);
+
+    const data = {
+        userEmail: toEmail,
+        code: code,
+        message: 'This code will be expired in 3 minutes!'
+    };
+};

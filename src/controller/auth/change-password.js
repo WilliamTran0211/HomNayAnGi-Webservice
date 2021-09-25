@@ -1,7 +1,7 @@
 const { Res, Kinds } = require('../../../common');
-const { userServices } = require('../../services');
 
 module.exports = async (req, res) => {
+    const { services } = req;
     const { userId } = req.params;
     const { password, newPassword } = req.body;
 

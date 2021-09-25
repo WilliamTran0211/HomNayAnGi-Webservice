@@ -1,5 +1,4 @@
-const { Kinds, Res } = require('../../../common');
-const ResultCodes = require('../../../common/common-result-codes');
+const { Kinds, Res, ResultCodes } = require('../../../common');
 const Enums = require('../../db/enums');
 
 module.exports = async (req, res) => {
