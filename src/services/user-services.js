@@ -55,7 +55,6 @@ UserServices.prototype.findUserByCredentials = async (email, password) => {
 };
 
 UserServices.prototype.getUserLoginResult = async function (userId) {
-    console.log(this);
     const userDetail = (await this.getUserById(userId)).toObject();
 
     console.log(userDetail);
@@ -151,4 +150,18 @@ UserServices.prototype.verifyEmailByCode = async function (code) {};
 
 UserServices.prototype.sendEmailAndResetPasswordForUser = async function (userId) {};
 
-UserServices.prototype.sendEmailResetPassword = async function (userId) {};
+UserServices.prototype.sendEmailResetPassword = async function (email) {
+    let user = await this.findUserByEmail(email);
+
+    if (!user) {
+        return Promise.reject(ResultCodes.newError('User not found', ResultCodes.NOT_FOUND));
+    }
+
+    const secretCode = await this.app.services.secretCodeServices.generateCode(user._id);
+
+    console.log(secretCode);
+
+    await this.app.services.emailServices.sendResetPasswordCode(user.email, user.displayName, secretCode.code).catch((err) => {
+        return Promise.reject(ResultCodes.newError('Send email failed', ResultCodes.ERROR, err));
+    });
+};
