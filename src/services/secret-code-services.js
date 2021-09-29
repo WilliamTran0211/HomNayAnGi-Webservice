@@ -4,12 +4,12 @@ const speakeasy = require('speakeasy');
 
 const { SecretCode } = require('../db');
 
-const SecrectCodeServices = function (app) {
+const SecretCodeServices = function (app) {
     console.log('Create SecrectCode Services');
     this.app = app;
 };
 
-module.exports = SecrectCodeServices;
+module.exports = SecretCodeServices;
 
 async function generateSecretKey(userId, timeToLive = null) {
     //Create a new SecrectCode in Database
@@ -35,7 +35,7 @@ async function generateSecretKey(userId, timeToLive = null) {
     return saveSecretCode;
 }
 
-SecrectCodeServices.prototype.getSecrectKey = async function (userId) {
+SecretCodeServices.prototype.getSecrectKey = async function (userId) {
     const user = await this.app.services.userServices.getUserById(userId);
 
     if (!user) {
@@ -47,7 +47,19 @@ SecrectCodeServices.prototype.getSecrectKey = async function (userId) {
     return secrectKey;
 };
 
-SecrectCodeServices.prototype.generateCode = async function (userId) {
+SecretCodeServices.prototype.getSecrectKeyByEmail = async function (email) {
+    const user = await this.app.services.userServices.findUserByEmail(email);
+
+    if (!user) {
+        return Promise.reject(ResultCodes.newError('User is not found.', ResultCodes.NOT_FOUND));
+    }
+
+    const secrectKey = await SecretCode.findOne({ userId: user._id });
+
+    return secrectKey;
+};
+
+SecretCodeServices.prototype.generateCode = async function (userId) {
     //Get secret key from database
     //If there is no secret code in database then call generateSecretKey to generate new one
     //after that return new TOTP
@@ -56,6 +68,7 @@ SecrectCodeServices.prototype.generateCode = async function (userId) {
 
     if (!secret) {
         secret = await generateSecretKey(userId);
+        z0000;
     }
 
     const code = speakeasy.totp({
@@ -70,10 +83,35 @@ SecrectCodeServices.prototype.generateCode = async function (userId) {
     };
 };
 
-SecrectCodeServices.prototype.verifyCode = async function (userId, code) {
+SecretCodeServices.prototype.verifyCode = async function (userId, code) {
     //return true if TOTP is verified
 
+    Kinds.mustExist(code, 'Code must exist', ResultCodes.PARAM_INVALID, { code: 1 });
+
     const secret = await this.getSecrectKey(userId);
+
+    if (!secret) {
+        return Promise.reject(ResultCodes.newError('Sercet code is not found.', ResultCodes.NOT_FOUND));
+    }
+
+    return speakeasy.totp.verify({
+        secret: secret.secretKey,
+        encoding: 'base32',
+        token: code,
+        step: 180
+    });
+};
+
+SecretCodeServices.prototype.verifyCodeByEmail = async function (email, code) {
+    Kinds.mustExist(code, 'Code must exist', ResultCodes.PARAM_INVALID, { code: 1 });
+
+    const userInfo = await this.app.services.userServices.findUserByEmail(email);
+
+    if (!userInfo) {
+        return Promise.reject(ResultCodes.newError('User not found.', ResultCodes.NOT_FOUND));
+    }
+
+    const secret = await this.getSecrectKey(userInfo._id);
 
     if (!secret) {
         return Promise.reject(ResultCodes.newError('Sercet code is not found.', ResultCodes.NOT_FOUND));

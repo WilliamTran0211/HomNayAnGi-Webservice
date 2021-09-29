@@ -13,4 +13,4 @@ router.put('/forgot-password', require('../controller/auth/forgot-password'));
 
 //OTP
 router.get('/:userId/otp-generator', require('../controller/auth/otp-generate'));
-router.post('/:userId/otp-verify', require('../controller/auth/otp-verify'));
+router.post('/otp-verify', require('../controller/auth/otp-verify'));
