@@ -5,9 +5,12 @@ const ResultCodes = require('../../common/common-result-codes');
 const AccessTokens = function () {};
 module.exports = AccessTokens;
 
-const SECRET_KEY = process.env.JWT_KEY;
+//const SECRET_KEY = process.env.JWT_KEY;
 
-function generateToken(data, expireAfter = 1) {
+const SECRET_ACCESS_KEY = process.env.JWT_ACCESS_KEY;
+const SECRET_REFRESH_KEY = process.env.JWT_REFRESH_KEY;
+
+function generateToken(data, SECRET_KEY, expireAfter = 1) {
     return jwt.sign(
         {
             data,
@@ -17,7 +20,7 @@ function generateToken(data, expireAfter = 1) {
     );
 }
 
-async function verifyToken(token) {
+async function verifyToken(token, SECRET_KEY) {
     return new Promise((resolve, reject) => {
         jwt.verify(token, SECRET_KEY, (err, result) => {
             if (err) {
@@ -49,13 +52,19 @@ AccessTokens.generateUserAccessToken = async (userId, password = undefined, toke
         hash = AccessTokens.hash(password);
     }
     return {
-        token: generateToken({ userId, hash }, tokenExpiredTime),
-        refreshToken: generateToken({ userId, hash }, refreshTokenExpiredTime)
+        token: generateToken({ userId, hash }, SECRET_ACCESS_KEY, tokenExpiredTime),
+        refreshToken: generateToken({ userId, hash }, SECRET_REFRESH_KEY, refreshTokenExpiredTime)
     };
 };
 
 AccessTokens.getTokenDetail = async (token) => {
-    return verifyToken(token).then((value) => {
+    return verifyToken(token, SECRET_ACCESS_KEY).then((value) => {
+        return value.data;
+    });
+};
+
+AccessTokens.getRefreshTokenDetail = async (token) => {
+    return verifyToken(token, SECRET_REFRESH_KEY).then((value) => {
         return value.data;
     });
 };

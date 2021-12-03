@@ -16,7 +16,7 @@ module.exports = async (req, res, next) => {
             if (userId && userId === detail.userId) {
                 console.log(detail);
                 next();
-            } else {
+            } else { 
                 console.log("UserId in path don't match with token detail.");
                 Res(res).forbidden(`Not authorized! UserId in path don't match with token detail.`);
             }
