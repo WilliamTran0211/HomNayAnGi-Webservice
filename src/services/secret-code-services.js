@@ -68,7 +68,6 @@ SecretCodeServices.prototype.generateCode = async function (userId) {
 
     if (!secret) {
         secret = await generateSecretKey(userId);
-        z0000;
     }
 
     const code = speakeasy.totp({

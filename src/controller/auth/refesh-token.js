@@ -12,13 +12,12 @@ module.exports = async (req, res) => {
     return Promise.resolve()
         .then(() => {
             if (refreshToken) {
-                return AccessTokens.getTokenDetail(refreshToken).then(async (details) => {
+                return AccessTokens.getRefreshTokenDetail(refreshToken).then(async (details) => {
                     console.log(details);
                     const userId = details.userId;
 
                     if (userId) {
                         const user = await services.userServices.findUserById(userId, '_id password status');
-
                         if (user) {
                             if (user.status !== Enums.UserStatuses.ACTIVE) {
                                 console.log(`user is not active => invalid token`);
