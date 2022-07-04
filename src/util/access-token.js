@@ -13,10 +13,13 @@ const SECRET_REFRESH_KEY = process.env.JWT_REFRESH_KEY;
 function generateToken(data, SECRET_KEY, expireAfter = 1) {
     return jwt.sign(
         {
-            data,
-            exp: Math.floor(Date.now() / 1000) + expireAfter // seconds
+            data
+            // exp: Math.floor(Date.now() / 1000) + expireAfter // seconds
         },
-        SECRET_KEY
+        SECRET_KEY,
+        {
+            expiresIn: expireAfter
+        }
     );
 }
 
@@ -46,14 +49,16 @@ AccessTokens.hash = (x) => {
     return crypto.createHash('sha1').update(x, 'utf8').digest('hex');
 };
 
-AccessTokens.generateUserAccessToken = async (userId, password = undefined, tokenExpiredTime = 10800, refreshTokenExpiredTime = 360 * 24 * 60 * 60) => {
-    let hash;
-    if (password) {
-        hash = AccessTokens.hash(password);
-    }
+AccessTokens.generateUserAccessToken = async (userId, password = undefined, email = undefined, tokenExpiredTime = 60, refreshTokenExpiredTime = 360 * 24 * 60 * 60) => {
+    // let hash;
+    // if (password) {
+    //     hash = AccessTokens.hash(password);
+    // }
+    const utcTimestamp = new Date().getTime();
+
     return {
-        token: generateToken({ userId, hash }, SECRET_ACCESS_KEY, tokenExpiredTime),
-        refreshToken: generateToken({ userId, hash }, SECRET_REFRESH_KEY, refreshTokenExpiredTime)
+        token: generateToken({ userId, email, iat: utcTimestamp+tokenExpiredTime }, SECRET_ACCESS_KEY, '360s'),
+        refreshToken: generateToken({ userId, email, iat: utcTimestamp+refreshTokenExpiredTime }, SECRET_REFRESH_KEY, refreshTokenExpiredTime)
     };
 };
 

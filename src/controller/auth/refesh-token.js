@@ -6,8 +6,8 @@ const Enums = require('../../db/enums');
 module.exports = async (req, res) => {
     const { services } = req;
     const { email, password, refreshToken } = req.body;
-
     const oldRefreshToken = refreshToken;
+    console.log('hre body', req.body);
 
     return Promise.resolve()
         .then(() => {
@@ -23,11 +23,10 @@ module.exports = async (req, res) => {
                                 console.log(`user is not active => invalid token`);
                                 return Promise.reject(new Error('`user is not active'));
                             }
-
-                            if (details.hash !== AccessTokens.hash(user.password)) {
-                                console.log(`password has been changed.`);
-                                return Promise.reject(new Error('`password has been changed'));
-                            }
+                            // if (details.hash !== AccessTokens.hash(user.password)) {
+                            //     console.log(`password has been changed.`);
+                            //     return Promise.reject(new Error('`password has been changed'));
+                            // }
                             return user;
                         }
                     }
@@ -41,11 +40,11 @@ module.exports = async (req, res) => {
             Kinds.mustExist(user, 'invalid authentication values', ResultCodes.PARAM_INVALID_VALUE);
 
             const { token } = await AccessTokens.generateUserAccessToken(user._id, user.password);
-
-            Res(res).ok({ accessToken: token, refreshToken: oldRefreshToken });
+            let data = { accessToken: token, refreshToken: oldRefreshToken };
+            Res(res).ok('ok', data);
         })
         .catch((err) => {
-            console.log('errrrrrrrrr: ', err.message);
+            console.log('errrrrrrrrr: ', err);
             Res(res).forbidden();
         });
 };
