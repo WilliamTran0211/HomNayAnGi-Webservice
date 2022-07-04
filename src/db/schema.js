@@ -60,6 +60,27 @@ schema.User = new Schema(
 );
 schema.User.index({ email: 'text', displayName: 'text', firstName: 'text', lastName: 'text' });
 
+schema.UserDevice = new Schema(
+    {
+        user: {
+            type: ObjectId, //
+            required: true,
+            ref: 'User'
+        },
+        deviceId: {
+            type: String,
+            required: true
+        },
+        token: String
+    },
+    {
+        collection: 'UserDevice',
+        timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' }
+    }
+);
+schema.UserDevice.index({ user: 1 });
+schema.UserDevice.index({ deviceId: 1 });
+
 schema.SecretCode = new Schema(
     {
         userId: {
@@ -116,6 +137,33 @@ schema.Recipe = new Schema(
 );
 schema.Recipe.index({ title: 'text' });
 
+schema.RecipeIngredient = new Schema(
+    {
+        recipe: {
+            type: ObjectId,
+            required: true,
+            ref: 'Recipe'
+        },
+        ingredient: {
+            type: ObjectId,
+            required: true,
+            ref: 'Food'
+        },
+        amount: {
+            type: Number,
+            required: true
+        },
+        unit: {
+            type: String,
+            required: true,
+            enum: Kinds.objectValues(Enums.Unit)
+        }
+    },
+    {
+        collection: 'RecipeIngredient'
+    }
+);
+
 schema.DishType = new Schema(
     {
         name: {
@@ -153,6 +201,20 @@ schema.Food = new Schema(
     },
     {
         collection: 'Food',
+        timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' }
+    }
+);
+
+schema.FoodType = new Schema(
+    {
+        name: {
+            type: String,
+            require: true,
+            validate: (value) => Kinds.mustBeString(value)
+        }
+    },
+    {
+        collection: 'FoodType',
         timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' }
     }
 );
