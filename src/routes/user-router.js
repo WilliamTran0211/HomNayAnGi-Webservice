@@ -14,6 +14,6 @@ router.get('/text', (req, res) => {
     });
 });
 
-router.get('/', require('../controller/user/search'));
+router.get('/', verifyToken, require('../controller/user/search'));
 router.get('/:userId', verifyToken, require('../controller/user/get-user-detail'));
 router.put('/:userId', verifyToken, require('../controller/user/update-user-detail'));

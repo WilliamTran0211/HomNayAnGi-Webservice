@@ -14,6 +14,7 @@ module.exports = UserServices;
 
 UserServices.prototype.search = async function () {
     let userList = await User.find({});
+    console.log('userlist:', userList);
     return userList;
 };
 
@@ -59,7 +60,7 @@ UserServices.prototype.getUserLoginResult = async function (userId) {
 
     console.log(userDetail);
 
-    const { token, refreshToken } = await AccessTokens.generateUserAccessToken(userDetail._id, userDetail.password);
+    const { token, refreshToken } = await AccessTokens.generateUserAccessToken(userDetail._id, userDetail.email);
 
     delete userDetail.password;
 
@@ -81,7 +82,7 @@ UserServices.prototype.createUser = async function (validateUserData) {
         user.birthday = Kinds.asDate(user.birthday);
     }
 
-    user.displayName = user.displayName || user.firstName;
+    user.displayName = user.displayName || user.firstName + ' ' + user.lastName;
 
     user.gender = user.gender || Enums.Genders.UNKNOWN;
     user.role = user.role || Enums.UserRoles.USER;
@@ -108,7 +109,7 @@ UserServices.prototype.updateUser = async function (userId, values) {
     let user = await this.getUserById(userId);
 
     User.schema.eachPath((path) => {
-        if (values[path] !== null && values[path] !== undefined && !['_id', 'email', 'password', 'status', '__v'].includes(path)) {
+        if (values[path] !== null && values[path] !== undefined && !['_id', 'email', 'password', '__v'].includes(path)) {
             user[path] = values[path];
         }
     });

@@ -7,8 +7,9 @@ module.exports = async (req, res) => {
         let { id, name, email } = req.query;
         console.log('search ne');
 
-        Res(res).ok(services.userServices.search);
+        let userList = await services.userServices.search();
+        Res(res).ok('ok', userList);
     } catch (error) {
-        res.status(400);
+        Res(res).bad(error.message);
     }
 };

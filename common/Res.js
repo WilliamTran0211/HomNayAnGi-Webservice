@@ -29,7 +29,7 @@ class Res {
     }
 
     bad(message, data, fields) {
-        this.send(400, ResultCodes.PARAM_INVALID, message, fields);
+        this.send(200, ResultCodes.PARAM_INVALID, message, fields);
     }
 
     invalidState(message, data) {
@@ -38,12 +38,12 @@ class Res {
     }
 
     unauthorized() {
-        this.send(401, ResultCodes.UNAUTHORIZED, 'Login required'); // be simple
+        this.send(200, ResultCodes.UNAUTHORIZED, 'Login required'); // be simple
         // this.send(401, ResultCodes.UNAUTHORIZED, 'Login required', 401);
     }
 
     forbidden(message, data) {
-        this.send(403, ResultCodes.FORBIDDEN, message, data); // be simple
+        this.send(200, ResultCodes.FORBIDDEN, message, data); // be simple
     }
 
     noContent(message, data) {

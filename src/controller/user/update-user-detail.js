@@ -6,7 +6,7 @@ module.exports = async (req, res) => {
     const userDetails = req.body;
 
     if (!Kinds.isObjectId(userId)) {
-        Res(res).badParam('Invalid userId', { userId: 1 });
+        Res(res).bad('Invalid userId', { userId: 1 });
     }
 
     const user = await services.userServices.findUserById(userId);
