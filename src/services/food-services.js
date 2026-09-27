@@ -19,7 +19,7 @@ FoodServices.prototype.getFoodById = async function (stringOrObjectId, select = 
     return Food.findById(Kinds.asObjectId(stringOrObjectId), select, options);
 };
 
-FoodServices.prototype.getFoodsByIds = async function (foodIds) {
+FoodServices.prototype.getFoodsByIds = async function (foodIds, select = null, options = null) {
     return Food.find({ _id: { $in: Kinds.asObjectIds(foodIds) } }, select, options);
 };
 
@@ -32,10 +32,10 @@ FoodServices.prototype.createFood = async function (validateFoodData) {
     try {
         saveData = await newFoodData.save();
     } catch (err) {
-        if (error.name === 'ValidationError') {
-            throw ResultCodes.newError(error.message, ResultCodes.PARAM_INVALID_VALUE, error.errors);
+        if (err.name === 'ValidationError') {
+            throw ResultCodes.newError(err.message, ResultCodes.PARAM_INVALID_VALUE, err.errors);
         }
-        throw error;
+        throw err;
     }
     return saveData;
 };

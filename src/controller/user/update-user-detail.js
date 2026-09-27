@@ -6,13 +6,13 @@ module.exports = async (req, res) => {
     const userDetails = req.body;
 
     if (!Kinds.isObjectId(userId)) {
-        Res(res).bad('Invalid userId', { userId: 1 });
+        return Res(res).bad('Invalid userId', { userId: 1 });
     }
 
     const user = await services.userServices.findUserById(userId);
 
     if (!user) {
-        Res(res).noContent('Not found');
+        return Res(res).noContent('Not found');
     }
 
     return await services.userServices

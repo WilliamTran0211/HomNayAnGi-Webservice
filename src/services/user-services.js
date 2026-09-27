@@ -19,7 +19,7 @@ UserServices.prototype.search = async function () {
 };
 
 UserServices.prototype.getUserList = async function () {
-    let userList = await User.find({});
+    return User.find({});
 };
 
 UserServices.prototype.findUserById = async function (stringOrObjectId, select = null, options = null) {
@@ -60,12 +60,12 @@ UserServices.prototype.getUserLoginResult = async function (userId) {
 
     console.log(userDetail);
 
-    const { token, refreshToken } = await AccessTokens.generateUserAccessToken(userDetail._id, userDetail.email);
+    const { token, refreshToken } = await AccessTokens.generateUserAccessToken(userDetail._id, userDetail.password, userDetail.email);
 
     delete userDetail.password;
 
     if (userDetail.status !== Enums.UserStatuses.ACTIVE) {
-        return Promise.reject(ErrorCodes.newError('User is not active.', ErrorCodes.INVALID_STATE));
+        return Promise.reject(ResultCodes.newError('User is not active.', ResultCodes.INVALID_STATE));
     }
 
     return { ...userDetail, token, refreshToken };
@@ -76,7 +76,7 @@ UserServices.prototype.createUser = async function (validateUserData) {
 
     const user = new User({ ...validateUserData, _id: newUserID });
 
-    user.password = await bcrypt.hash(user.password, 5);
+    user.password = await bcrypt.hash(user.password, 10);
 
     if (user.birthday) {
         user.birthday = Kinds.asDate(user.birthday);
@@ -125,7 +125,7 @@ UserServices.prototype.changePassword = async function (userId, password, newPas
         throw ResultCodes.newError('Invalid Password', ResultCodes.PARAM_INVALID_VALUE, { password: 1 });
     }
 
-    user.password = await bcrypt.hash(newPassword, 5);
+    user.password = await bcrypt.hash(newPassword, 10);
     user.save();
 
     return this.getUserLoginResult(userId);

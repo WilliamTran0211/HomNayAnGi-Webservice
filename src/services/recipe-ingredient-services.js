@@ -9,14 +9,16 @@ const RecipeIngredientService = function (app) {
 
 module.exports = RecipeIngredientService;
 
-RecipeIngredientService.getIngredientsOfRecipe = async function (recipeId) {
-    const ingredientIds = await RecipeIngredient({ recipe: Kinds.asObjectId(recipeId) }, { ingredient: 1 });
+RecipeIngredientService.prototype.getIngredientsOfRecipe = async function (recipeId) {
+    const ingredientIds = await RecipeIngredient.find({ recipe: Kinds.asObjectId(recipeId) }, { ingredient: 1 });
 
-    const listFood = await this.app.FoodServices.getFoodsByIds(ingredientIds);
+    const listFood = await this.app.services.foodServices.getFoodsByIds(ingredientIds);
 
     return listFood;
 };
 
-RecipeIngredientService.saveIngredient = async function (recipeId, ingredientId){
-    const recipe = await this.app.RecipeService.getRecipeById(recipeId);
-}
+RecipeIngredientService.prototype.saveIngredient = async function (recipeId, ingredientId) {
+    const recipe = await this.app.services.recipeServices.getRecipeById(recipeId);
+
+    return recipe;
+};

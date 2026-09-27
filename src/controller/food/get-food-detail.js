@@ -5,13 +5,13 @@ module.exports = async (req, res) => {
     const { foodId } = req.params;
 
     if (!Kinds.isObjectId(foodId)) {
-        Res(res).bad('Invalid foodId', { foodId: 1 });
+        return Res(res).bad('Invalid foodId', { foodId: 1 });
     }
 
-    const food = await services.foodServices.findUserById(foodId);
+    const food = await services.foodServices.getFoodById(foodId);
 
     if (!food) {
-        Res(res).noContent('Not found');
+        return Res(res).noContent('Not found');
     }
 
     Res(res).ok('ok', food);

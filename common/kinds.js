@@ -207,7 +207,7 @@ Kinds.asObjectId = (stringOrObjectId) => {
     if (Kinds.isObjectId(stringOrObjectId)) {
         return stringOrObjectId;
     }
-    throw new ResultError(`singleOrArray must be String or ObjectId, but ${typeof singleOrArray}`);
+    throw new ResultError(`stringOrObjectId must be String or ObjectId, but ${typeof stringOrObjectId}`);
 };
 
 Kinds.asObjectIds = (arrayOrObjectId, skipNull = false) => {
@@ -272,7 +272,7 @@ Kinds.randomElelment = (array) => {
 
 Kinds.randomUniqueElements = (array) => {
     Kinds.mustBeArray(array);
-    result = [];
+    let result = [];
 
     const indexes = {};
     let count = Kinds.randomInt(array.length - 1) + 1;

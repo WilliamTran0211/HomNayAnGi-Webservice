@@ -5,7 +5,7 @@ module.exports = async (req, res) => {
     const { email } = req.body;
 
     if (!Kinds.isString(email)) {
-        Res(res).bad("Email can't be empty", { email: 0 });
+        return Res(res).bad("Email can't be empty", { email: 0 });
     }
 
     await services.userServices

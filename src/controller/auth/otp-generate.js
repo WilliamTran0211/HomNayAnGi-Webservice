@@ -6,13 +6,12 @@ module.exports = async (req, res) => {
     const { services } = req;
     const { userId } = req.params;
 
-    const result = services.secretCodeServices.generateCode(userId);
-
     if (!Kinds.isObjectId(userId)) {
-        Res(res).bad('Invalid userId', { userId: 1 });
+        return Res(res).bad('Invalid userId', { userId: 1 });
     }
 
-    result
+    services.secretCodeServices
+        .generateCode(userId)
         .then((result) => {
             Res(res).ok({
                 code: result.code,
