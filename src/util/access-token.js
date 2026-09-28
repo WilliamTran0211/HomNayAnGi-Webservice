@@ -50,15 +50,11 @@ AccessTokens.hash = (x) => {
 };
 
 AccessTokens.generateUserAccessToken = async (userId, password = undefined, email = undefined, tokenExpiredTime = 60, refreshTokenExpiredTime = 360 * 24 * 60 * 60) => {
-    // let hash;
-    // if (password) {
-    //     hash = AccessTokens.hash(password);
-    // }
-    const utcTimestamp = new Date().getTime();
+    const hash = password ? AccessTokens.hash(password) : undefined;
 
     return {
-        token: generateToken({ userId, email, iat: utcTimestamp+tokenExpiredTime }, SECRET_ACCESS_KEY, '360s'),
-        refreshToken: generateToken({ userId, email, iat: utcTimestamp+refreshTokenExpiredTime }, SECRET_REFRESH_KEY, refreshTokenExpiredTime)
+        token: generateToken({ userId, email, hash }, SECRET_ACCESS_KEY, '360s'),
+        refreshToken: generateToken({ userId, email, hash }, SECRET_REFRESH_KEY, refreshTokenExpiredTime)
     };
 };
 

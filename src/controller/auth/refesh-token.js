@@ -17,16 +17,16 @@ module.exports = async (req, res) => {
                     const userId = details.userId;
 
                     if (userId) {
-                        const user = await services.userServices.findUserById(userId, '_id password status');
+                        const user = await services.userServices.findUserById(userId, '_id email password status');
                         if (user) {
                             if (user.status !== Enums.UserStatuses.ACTIVE) {
                                 console.log(`user is not active => invalid token`);
                                 return Promise.reject(new Error('`user is not active'));
                             }
-                            // if (details.hash !== AccessTokens.hash(user.password)) {
-                            //     console.log(`password has been changed.`);
-                            //     return Promise.reject(new Error('`password has been changed'));
-                            // }
+                            if (details.hash && details.hash !== AccessTokens.hash(user.password)) {
+                                console.log(`password has been changed.`);
+                                return Promise.reject(new Error('password has been changed'));
+                            }
                             return user;
                         }
                     }
@@ -39,7 +39,7 @@ module.exports = async (req, res) => {
         .then(async (user) => {
             Kinds.mustExist(user, 'invalid authentication values', ResultCodes.PARAM_INVALID_VALUE);
 
-            const { token } = await AccessTokens.generateUserAccessToken(user._id, user.password);
+            const { token } = await AccessTokens.generateUserAccessToken(user._id, user.password, user.email);
             let data = { accessToken: token, refreshToken: oldRefreshToken };
             Res(res).ok('ok', data);
         })

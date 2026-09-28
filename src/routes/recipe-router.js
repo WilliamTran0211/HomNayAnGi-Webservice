@@ -7,5 +7,4 @@ module.exports = router;
 router.get('/', require('../controller/recipe/search'));
 router.get('/:recipeId', require('../controller/recipe/get-recipe-detail'));
 router.post('/', require('../controller/recipe/create-recipe'));
-router.put('/:recipeId');
-   
+router.put('/:recipeId', require('../controller/recipe/update-recipe-detail'));

@@ -54,10 +54,10 @@ RecipeService.prototype.createRecipe = async function (validateRecipeDetails) {
     try {
         saveRecipe = await recipe.save();
     } catch (err) {
-        if (error.name === 'ValidationError') {
-            throw ResultCodes.newError(error.message, ResultCodes.PARAM_INVALID_VALUE, error.errors);
+        if (err.name === 'ValidationError') {
+            throw ResultCodes.newError(err.message, ResultCodes.PARAM_INVALID_VALUE, err.errors);
         }
-        throw error;
+        throw err;
     }
     return saveRecipe;
 };
@@ -68,9 +68,9 @@ RecipeService.prototype.deleteRecipe = async function () {};
 
 // Recipe Ingredients
 RecipeService.prototype.getIngredientsOfRecipe = async function (recipeId) {
-    const ingredientIds = await RecipeIngredient({ recipe: Kinds.asObjectId(recipeId) }, { ingredient: 1 });
+    const ingredientIds = await RecipeIngredient.find({ recipe: Kinds.asObjectId(recipeId) }, { ingredient: 1 });
 
-    const listFood = await this.app.FoodServices.getFoodsByIds(ingredientIds);
+    const listFood = await this.app.services.foodServices.getFoodsByIds(ingredientIds);
 
     return listFood;
 };
@@ -84,20 +84,21 @@ RecipeService.prototype.saveRecipeIngredients = async function (recipeId, ingred
     console.log(ingredients);
 
     if (ingredients.length > 0) {
-        let saveIngredient;
         try {
-            for (index in ingredients) {
-                saveIngredient = new RecipeIngredient({
+            for (const ingredient of ingredients) {
+                const saveIngredient = new RecipeIngredient({
                     recipe: Kinds.asObjectId(recipeId),
-                    ingredient: Kinds.asObjectId(ingredients[index]._id),
-                    amount: ingredients[index].amount,
-                    unit: ingredients[index].unit
+                    ingredient: Kinds.asObjectId(ingredient._id),
+                    amount: ingredient.amount,
+                    unit: ingredient.unit
                 });
-                saveIngredient.save();
+                await saveIngredient.save();
             }
-            return Promise.resolve(true);
+            return true;
         } catch (err) {
             return Promise.reject(err);
         }
     }
+
+    return true;
 };

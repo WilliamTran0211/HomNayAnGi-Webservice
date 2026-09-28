@@ -6,13 +6,13 @@ module.exports = async (req, res) => {
     const foodDetails = req.body;
 
     if (!Kinds.isObjectId(foodID)) {
-        Res(res).bad('Invalid foodID', { foodID: 1 });
+        return Res(res).bad('Invalid foodID', { foodID: 1 });
     }
 
     let oldFoodData = await services.foodServices.getFoodById(foodID);
 
     if (!oldFoodData) {
-        Res(res).noContent('Not found');
+        return Res(res).noContent('Not found');
     }
 
     return await services.foodServices
