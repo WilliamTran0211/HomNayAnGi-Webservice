@@ -13,7 +13,7 @@ module.exports = async (req, res) => {
     services.secretCodeServices
         .generateCode(userId)
         .then((result) => {
-            Res(res).ok({
+            Res(res).ok('ok', {
                 code: result.code,
                 remainTime: result.time
             });

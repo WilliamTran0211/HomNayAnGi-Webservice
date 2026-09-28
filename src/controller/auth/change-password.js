@@ -16,7 +16,7 @@ module.exports = async (req, res) => {
     services.userServices
         .changePassword(userId, password, newPassword)
         .then((result) => {
-            Res(res).ok(result);
+            Res(res).ok('ok', result);
         })
         .catch((err) => {
             Res(res).forbidden(err.message);

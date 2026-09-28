@@ -99,4 +99,7 @@ EmailServices.prototype.sendEmailVerifyCode = async function (toEmail, code) {
         code: code,
         message: 'This code will be expired in 3 minutes!'
     };
+
+    const emailBody = await Templates.render('user-verify-email.html', data);
+    return this.send(toEmail, 'Verify your email!', emailBody);
 };

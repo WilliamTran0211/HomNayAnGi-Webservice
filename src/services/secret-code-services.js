@@ -78,7 +78,7 @@ SecretCodeServices.prototype.generateCode = async function (userId) {
 
     return {
         code: code,
-        time: 30 - Math.floor((new Date().getTime() / 1000) % 30)
+        time: 180 - Math.floor((new Date().getTime() / 1000) % 180)
     };
 };
 

@@ -60,13 +60,13 @@ UserServices.prototype.getUserLoginResult = async function (userId) {
 
     console.log(userDetail);
 
-    const { token, refreshToken } = await AccessTokens.generateUserAccessToken(userDetail._id, userDetail.password, userDetail.email);
-
-    delete userDetail.password;
-
     if (userDetail.status !== Enums.UserStatuses.ACTIVE) {
         return Promise.reject(ResultCodes.newError('User is not active.', ResultCodes.INVALID_STATE));
     }
+
+    const { token, refreshToken } = await AccessTokens.generateUserAccessToken(userDetail._id, userDetail.password, userDetail.email);
+
+    delete userDetail.password;
 
     return { ...userDetail, token, refreshToken };
 };

@@ -23,14 +23,14 @@ module.exports = async (req, res) => {
 
         result
             .then((result) => {
-                Res(res).ok({ codeValid: result });
+                Res(res).ok('ok', { codeValid: result });
             })
             .catch((err) => {
                 console.log(err);
-                Res(res).bad({ message: err.message });
+                Res(res).bad(err.message);
             });
     } catch (err) {
         console.log(err);
-        Res(res).bad({ message: err.message });
+        Res(res).bad(err.message);
     }
 };
