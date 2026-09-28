@@ -1,4 +1,4 @@
-const { Kinds } = require('../../common');
+const { Kinds, ResultCodes } = require('../../common');
 const { ObjectId } = require('mongoose').Types;
 const { Food, Enums } = require('../db');
 const FoodServices = function (app) {
@@ -52,4 +52,12 @@ FoodServices.prototype.updateFood = async function (foodId, values) {
     return food.save();
 };
 
-FoodServices.prototype.deleteFood = async function (foodId) {};
+FoodServices.prototype.deleteFood = async function (foodId) {
+    const food = await this.getFoodById(foodId);
+
+    Kinds.mustExist(food, `No such foodId ${foodId}`, ResultCodes.NOT_FOUND, { foodId: 1 });
+
+    await food.remove();
+
+    return food;
+};

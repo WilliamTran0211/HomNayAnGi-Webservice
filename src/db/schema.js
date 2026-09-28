@@ -51,6 +51,10 @@ schema.User = new Schema(
             type: String,
             default: Enums.UserStatuses.ACTIVE,
             enum: Kinds.objectValues(Enums.UserStatuses)
+        },
+        emailVerified: {
+            type: Boolean,
+            default: false
         }
     },
     {

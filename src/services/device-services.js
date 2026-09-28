@@ -12,6 +12,17 @@ const DeviceService = function (app) {
 
 module.exports = DeviceService;
 
-DeviceService.prototype.setUserDevice = async function () {};
+DeviceService.prototype.setUserDevice = async function (userId, deviceId, token) {
+    Kinds.mustExist(userId, 'userId', ResultCodes.PARAM_INVALID_VALUE, { userId: 1 });
+    Kinds.mustExist(deviceId, 'deviceId', ResultCodes.PARAM_INVALID_VALUE, { deviceId: 1 });
 
-DeviceService.prototype.getUserDevice = async function () {};
+    return UserDevice.findOneAndUpdate(
+        { user: Kinds.asObjectId(userId), deviceId },
+        { user: Kinds.asObjectId(userId), deviceId, token },
+        { upsert: true, new: true }
+    );
+};
+
+DeviceService.prototype.getUserDevice = async function (userId) {
+    return UserDevice.find({ user: Kinds.asObjectId(userId) });
+};

@@ -62,9 +62,35 @@ RecipeService.prototype.createRecipe = async function (validateRecipeDetails) {
     return saveRecipe;
 };
 
-RecipeService.prototype.updateRecipe = async function () {};
+RecipeService.prototype.updateRecipe = async function (recipeId, values) {
+    let recipe = await this.getRecipeById(recipeId);
 
-RecipeService.prototype.deleteRecipe = async function () {};
+    Kinds.mustExist(recipe, `No such recipeId ${recipeId}`, ResultCodes.NOT_FOUND, { recipeId: 1 });
+
+    recipe.title = values.title || recipe.title;
+    recipe.description = values.description || recipe.description;
+    recipe.serves = values.serves || recipe.serves;
+    recipe.cookIn = values.cookIn || recipe.cookIn;
+    recipe.type = values.type || recipe.type;
+
+    if (Kinds.isArray(values.ingredient)) {
+        await RecipeIngredient.deleteMany({ recipe: Kinds.asObjectId(recipeId) });
+        await this.saveRecipeIngredients(recipeId, values.ingredient);
+    }
+
+    return recipe.save();
+};
+
+RecipeService.prototype.deleteRecipe = async function (recipeId) {
+    const recipe = await this.getRecipeById(recipeId);
+
+    Kinds.mustExist(recipe, `No such recipeId ${recipeId}`, ResultCodes.NOT_FOUND, { recipeId: 1 });
+
+    await RecipeIngredient.deleteMany({ recipe: Kinds.asObjectId(recipeId) });
+    await recipe.remove();
+
+    return recipe;
+};
 
 // Recipe Ingredients
 RecipeService.prototype.getIngredientsOfRecipe = async function (recipeId) {

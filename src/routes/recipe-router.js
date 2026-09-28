@@ -8,3 +8,4 @@ router.get('/', require('../controller/recipe/search'));
 router.get('/:recipeId', require('../controller/recipe/get-recipe-detail'));
 router.post('/', require('../controller/recipe/create-recipe'));
 router.put('/:recipeId', require('../controller/recipe/update-recipe-detail'));
+router.delete('/:recipeId', require('../controller/recipe/delete-recipe'));

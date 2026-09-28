@@ -3,16 +3,15 @@ const { Kinds, Res } = require('../../../common');
 module.exports = async (req, res) => {
     const { services } = req;
     const { recipeId } = req.params;
-    const recipeDetails = req.body;
 
     if (!Kinds.isObjectId(recipeId)) {
         return Res(res).bad('Invalid recipeId', { recipeId: 1 });
     }
 
     return services.recipeServices
-        .updateRecipe(recipeId, recipeDetails)
+        .deleteRecipe(recipeId)
         .then((recipe) => {
-            Res(res).ok('Recipe info update successful', recipe);
+            Res(res).ok('Recipe deleted', recipe);
         })
         .catch((err) => {
             Res(res).bad(err.message);

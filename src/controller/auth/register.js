@@ -14,6 +14,10 @@ module.exports = async (req, res) => {
 
                 delete createdUser.password;
 
+                services.userServices.sendEmailVerificationLink(user._id).catch((err) => {
+                    console.error('Failed to send verification email:', err);
+                });
+
                 Res(res).ok('welcome', createdUser);
             })
             .catch((error) => {

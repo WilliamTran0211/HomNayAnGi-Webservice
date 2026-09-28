@@ -143,13 +143,48 @@ UserServices.prototype.deleteUser = async function (userId, password) {
     return user;
 };
 
-UserServices.prototype.sendEmailVerificationLink = async function (userId) {};
+UserServices.prototype.sendEmailVerificationLink = async function (userId) {
+    const user = await this.getUserById(userId);
 
-UserServices.prototype.sendEmailActivation = async function (email) {};
+    if (user.emailVerified) {
+        return;
+    }
 
-UserServices.prototype.verifyEmailByCode = async function (code) {};
+    const secretCode = await this.app.services.secretCodeServices.generateCode(user._id);
 
-UserServices.prototype.sendEmailAndResetPasswordForUser = async function (userId) {};
+    return this.app.services.emailServices.sendEmailVerifyCode(user.email, secretCode.code).catch((err) => {
+        return Promise.reject(ResultCodes.newError('Send email failed', ResultCodes.ERROR, err));
+    });
+};
+
+UserServices.prototype.sendEmailActivation = async function (email) {
+    const user = await this.findUserByEmail(email);
+
+    Kinds.mustExist(user, `User not found for email ${email}`, ResultCodes.NOT_FOUND, { email: 1 });
+
+    return this.sendEmailVerificationLink(user._id);
+};
+
+UserServices.prototype.verifyEmailByCode = async function (userId, code) {
+    const user = await this.getUserById(userId);
+
+    const codeValid = await this.app.services.secretCodeServices.verifyCode(userId, code);
+
+    if (!codeValid) {
+        throw ResultCodes.newError('Invalid or expired code', ResultCodes.PARAM_INVALID_VALUE, { code: 1 });
+    }
+
+    user.emailVerified = true;
+    await user.save();
+
+    return true;
+};
+
+UserServices.prototype.sendEmailAndResetPasswordForUser = async function (userId) {
+    const user = await this.getUserById(userId);
+
+    return this.sendEmailResetPassword(user.email);
+};
 
 UserServices.prototype.sendEmailResetPassword = async function (email) {
     let user = await this.findUserByEmail(email);

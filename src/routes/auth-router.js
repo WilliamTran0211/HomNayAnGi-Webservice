@@ -10,6 +10,7 @@ router.post('/login', require('../controller/auth/login'));
 router.post('/refresh-token', require('../controller/auth/refesh-token'));
 router.put('/:userId/change-password', verifyToken, require('../controller/auth/change-password'));
 router.post('/forgot-password', require('../controller/auth/forgot-password'));
+router.post('/verify-email', require('../controller/auth/verify-email'));
 
 //OTP
 router.get('/:userId/otp-generator', require('../controller/auth/otp-generate'));
